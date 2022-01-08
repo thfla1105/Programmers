@@ -2,9 +2,7 @@ from itertools import combinations
 from collections import Counter
 
 def split_st(q):
-    st = q.split('and')
-    sv = str(''.join(st))
-    st = sv.split()
+    st = q.replace('and','').split()
     score = int(st[-1])
     while '-' in st:
         st.remove('-')
@@ -22,15 +20,21 @@ def solution(info, query):
         it=i.split()
         for j in range(5):
             combi=list(combinations(sorted(it[:-1]),j))
+            score = int(it[-1])
             for c in combi:
                 tmp = ''.join(c)
-                in_data[tmp]=it[-1]
+                if tmp in in_data:
+                    in_data[tmp].append(score)
+                else:
+                    in_data[tmp]=[score]
     
+    for v in in_data.values():
+        v.sort()        
+        
     for q in query:
         st, score = split_st(q)
         if st in list(in_data):
             data = in_data[st]
-        
             if len(data)>0:
                 start,end=0, len(data)
                 while start!=end and start!=len(data):
